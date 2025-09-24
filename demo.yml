@@ -1,0 +1,36 @@
+name: Demo Python Script Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  demo-job:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Run script
+        id: run_script
+        env:
+          MY_VARIABLE: ${{ vars.MY_VARIABLE }}
+        run: |
+          python script.py "${MY_VARIABLE}"
+          echo "result=$(cat output.txt)" >> $GITHUB_OUTPUT
+
+      - name: Write to summary
+        run: |
+          echo "### Script Result" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.run_script.outputs.result }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: script-output
+          path: output.txt
