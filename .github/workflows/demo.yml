@@ -5,26 +5,30 @@ on:
   push:
     branches:
       - master       
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  demo-job:
+  build:
     runs-on: ubuntu-latest
 
     steps:
+      # Move source code for runner environment
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
       - name: Run script
         id: run_script
         env:
-          MY_VARIABLE: ${{ secrets.MY_VARIABLE }}
+          MY_VARIABLE: ${{ environment.MY_VARIABLE }}
+          MY_STRING: ${{ secrets.MY_STRING }}
         run: |
-          python script.py "${MY_VARIABLE}"
+          python script.py "${MY_VARIABLE}" "${MY_STRING}"
           echo "result=$(cat output.txt)" >> $GITHUB_OUTPUT
 
       - name: Write to summary
