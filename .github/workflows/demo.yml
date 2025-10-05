@@ -25,7 +25,7 @@ jobs:
       - name: Run script
         id: run_script
         env:
-          MY_VARIABLE: ${{ environment.MY_VARIABLE }}
+          MY_VARIABLE: ${{ env.MY_VARIABLE }}
           MY_STRING: ${{ secrets.MY_STRING }}
         run: |
           python script.py "${MY_VARIABLE}" "${MY_STRING}"
